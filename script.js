@@ -121,7 +121,11 @@ function handleClick(e){
 }
 
 function reset(){
-
+    updateStatus(null);
+    gameActive=true;
+    gameBoard=['','','','','','','',''];
+    currentPlayer='X';
+    cells.forEach(cell => cell.textContent = '');
 }
 
 board.addEventListener('click', handleClick);
