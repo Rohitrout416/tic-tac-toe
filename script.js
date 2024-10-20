@@ -4,7 +4,7 @@ const Status = document.querySelector(".status");
 const resetButton = document.querySelector(".reset");
 
 let currentPlayer = "X";
-let gameState = ["", "", "", "", "", "", "", "", ""];
+let gameBoard = ["", "", "", "", "", "", "", "", ""];
 let gameActive = true;
 let winningCombinations = [
     [0, 1, 2],
@@ -20,7 +20,7 @@ let winningCombinations = [
 updateStatus(null);
 
 function checkWin(board){
-    for(const pattern of WinPatterns){
+    for(const pattern of winningCombinations){
         const [a, b, c] = pattern;
         if(board[a] && (board[a] === board[b] && board[a] === board[c])){
             return board[a];
@@ -41,8 +41,8 @@ function updateStatus(winner) {
 
 function minimax(board, depth, isMaximizing){
     const winner = checkWin(board);
-    if(winner=='X') return 10-depth;
-    if(winner=='O') return depth-10;
+    if(winner=='O') return 10-depth;
+    if(winner=='X') return depth-10;
     if(winner=='Tie') return 0;
 
     if(isMaximizing){
@@ -76,14 +76,14 @@ function minimax(board, depth, isMaximizing){
     }
 }
 
-function aiMove(board){
+function aiMove(){
     let bestScore = -Infinity;
     let bestIndex = 0;
     for(let i=0; i<9; i++){
-        if(board[i]==''){
-            board[i]='O';
-            let score = minimax(board, 0, false);
-            board[i]='';
+        if(gameBoard[i]==''){
+            gameBoard[i]='O';
+            let score = minimax(gameBoard, 0, false);
+            gameBoard[i]='';
 
             if(score>bestScore){
                 bestScore=score;
@@ -92,11 +92,11 @@ function aiMove(board){
         }
     }
 
-    board[bestIndex] = 'O';
+    gameBoard[bestIndex] = 'O';
     cells[bestIndex].textContent = 'O';
     currentPlayer='X';
 
-    const winner = checkWin(board);
+    const winner = checkWin(gameBoard);
     updateStatus(winner);
     if(winner) gameActive=false;
 }
@@ -104,11 +104,11 @@ function aiMove(board){
 function handleClick(e){
     const index = e.target.getAttribute('data-index');
 
-    if(board[index]!=='' || !gameActive || currentPlayer=='O') return;
+    if(gameBoard[index]!=='' || !gameActive || currentPlayer=='O') return;
 
-    board[index]='X';
-    cells[i].textContent = 'X';
-    const winner = checkWin(board);
+    gameBoard[index]='X';
+    cells[index].textContent = 'X';
+    const winner = checkWin(gameBoard);
     updateStatus(winner);
 
     if(winner) {
@@ -117,7 +117,7 @@ function handleClick(e){
     }
 
     currentPlayer='O';
-    setTimeout(aiMove, 300);
+    setTimeout(aiMove, 500);
 }
 
 function reset(){
